@@ -3,36 +3,42 @@ create database studentportal;
 use studentportal;
 
 create table
-    student (
-        student_id int (8) unsigned primary key not null unique,
-        first_name varchar(255) not null,
-        middle_name varchar(255),
-        last_name varchar(255) not null,
-        birtdate date not null,
-        gender enum ('male', 'female', 'other') not null,
-        email varchar(255) not null unique,
-        mobile_number varchar(11) not null,
-        street_address varchar(255) not null,
-        city varchar(255) not null,
-        state varchar(255) not null,
-        zip_code varchar(7) not null,
-        course varchar(10) not null,
-        year_level int check (year_level between 1 and 4) not null,
-        password varchar(255) not null
+    students (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        first_name VARCHAR(255) NOT NULL,
+        middle_name VARCHAR(255),
+        last_name VARCHAR(255) NOT NULL,
+        birthdate DATE NOT NULL,
+        gender ENUM ('male', 'female', 'other') NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        mobile_number VARCHAR(11) NOT NULL,
+        street_address VARCHAR(255) NOT NULL,
+        city VARCHAR(100) NOT NULL,
+        state VARCHAR(100) NOT NULL,
+        zip_code VARCHAR(7) NOT NULL,
+        student_id VARCHAR(8) UNIQUE NOT NULL,
+        course VARCHAR(10) NOT NULL,
+        year_level INT check (year_level between 1 and 4) NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
-SELECT
+DESCRIBE students;
+
+drop table students;
+
+select
     *
-FROM
-    student;
+from
+    students;
 
 INSERT INTO
-    student (
+    students (
         student_id,
         first_name,
         middle_name,
         last_name,
-        birtdate,
+        birthdate,
         gender,
         email,
         mobile_number,
