@@ -79,12 +79,64 @@ router.post(
 	}
 );
 
-// Get all students
+// Login
+router.post("/login", async (req, res) => {
+	try {
+		const { email, password } = req.body;
+
+		// 1. Find student by email
+		const [students] = await db
+			.promise()
+			.query("SELECT * FROM students WHERE email = ?", [email]);
+
+		// 2. Check if student exists
+		if (students.length === 0) {
+			return res.status(401).json({ error: "Invalid credentials" });
+		}
+
+		const student = students[0];
+
+		// 3. Compare passwords
+		const passwordMatch = await bcrypt.compare(password, student.password);
+
+		if (!passwordMatch) {
+			return res.status(401).json({ error: "Invalid credentials" });
+		}
+
+		// 4. Successful login - return user data (without password)
+		const { password: _, ...safeStudentData } = student;
+		res.json({
+			message: "Login successful",
+			student: safeStudentData,
+		});
+	} catch (error) {
+		console.error("Login error:", error);
+		res.status(500).json({ error: "Server error during login" });
+	}
+});
+
+// Get all data by id
 router.get("/", (req, res) => {
 	let sql = "SELECT * FROM students";
-	db.query(sql, (err, results) => {
+	db.query(sql, (err, result) => {
 		if (err) throw err;
-		res.json(results);
+		res.send(result);
+	});
+});
+
+// Get single student by ID
+router.get("/:id", (req, res) => {
+	const student_id = req.params.id;
+	const sql = "SELECT * FROM students WHERE student_id = ?";
+
+	db.query(sql, [student_id], (err, result) => {
+		if (err) return res.status(500).json({ error: "Database error" });
+		if (result.length === 0)
+			return res.status(404).json({ error: "Student not found" });
+
+		// Remove sensitive data before sending
+		const { password, ...studentData } = result[0];
+		res.json(studentData);
 	});
 });
 
