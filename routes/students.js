@@ -115,12 +115,12 @@ router.post("/login", async (req, res) => {
 	}
 });
 
-// Get all data by id
+// Get all students
 router.get("/", (req, res) => {
-	let sql = "SELECT * FROM students";
-	db.query(sql, (err, result) => {
+	let sql = "SELECT * FROM students order by course";
+	db.query(sql, (err, results) => {
 		if (err) throw err;
-		res.send(result);
+		res.json(results);
 	});
 });
 
