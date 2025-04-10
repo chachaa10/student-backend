@@ -117,7 +117,8 @@ router.post("/login", async (req, res) => {
 
 // Get all students
 router.get("/", (req, res) => {
-	let sql = "SELECT * FROM students order by course";
+	let sql =
+		"SELECT * FROM students order by year_level desc, course, last_name";
 	db.query(sql, (err, results) => {
 		if (err) throw err;
 		res.json(results);
